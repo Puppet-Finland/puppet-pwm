@@ -1,0 +1,13 @@
+{
+  "name": "puppetfinland-pwm",
+  "version": "0.1.0",
+  "author": "Puppet-Finland team",
+  "license": "BSD license",
+  "summary": "Setup 389 Directory Server",
+  "source": "https://github.com/Puppet-Finland/pwm.git",
+  "project_page": "https://github.com/Puppet-Finland/pwm",
+  "dependencies": [
+    { "name": "seteam-tomcat", "version_requirement": ">=0.1.0" },
+    { "name": "puppetfinland/dirsrv", "version_requirement": ">= 0.1.0" },
+  ]
+}

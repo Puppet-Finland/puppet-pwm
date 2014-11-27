@@ -1,0 +1,10 @@
+dn: cn=schema
+objectclass: top
+objectclass: ldapSubentry
+objectclass: subschema
+cn: schema
+attributetypes: ( 1.3.6.1.4.1.35015.1.2.1 NAME 'pwmEventLog'  SYNTAX 1.3.6.1.4.1.1466.115.121.1.40 X-ORIGIN 'user defined' )
+attributetypes: ( 1.3.6.1.4.1.35015.1.2.2 NAME 'pwmResponseSet'  SYNTAX 1.3.6.1.4.1.1466.115.121.1.40 X-ORIGIN 'user defined' )
+attributetypes: ( 1.3.6.1.4.1.35015.1.2.3 NAME 'pwmLastPwdUpdate'  SYNTAX 1.3.6.1.4.1.1466.115.121.1.24 SINGLE-VALUE X-ORIGIN 'user defined' )
+attributetypes: ( 1.3.6.1.4.1.35015.1.2.4 NAME 'pwmGUID'  SYNTAX 1.3.6.1.4.1.1466.115.121.1.7 SINGLE-VALUE X-ORIGIN 'user defined' )
+objectclasses: ( 1.3.6.1.4.1.35015.1.1.1 NAME 'pwmUser' DESC '' SUP top AUXILIARY MAY ( pwmEventLog $ pwmGUID $ pwmLastPwdUpdate $ pwmResponseSet ) X-ORIGIN 'user defined' )
