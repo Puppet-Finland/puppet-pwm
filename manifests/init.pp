@@ -10,6 +10,8 @@
 #
 # == Parameters
 #
+# [*manage_config*]
+#   Manage Pwm configuration. Valid values 'yes' (default) and 'no'.
 # [*dirsrv_type*]
 #   Directory server type. Currently only '389ds' is supported. The default 
 #   value is 'none', which means that auto-configuration of schemas is omitted.
@@ -24,6 +26,7 @@
 #
 class pwm
 (
+    $manage_config = 'yes',
     $dirsrv_type = 'none'
 
 ) inherits pwm::params
@@ -34,8 +37,10 @@ if hiera('manage_pwm', 'true') != 'false' {
 
     include pwm::install
 
-    class { 'pwm::config':
-        dirsrv_type => $dirsrv_type,
+    if $manage_config == 'yes' {
+        class { 'pwm::config':
+            dirsrv_type => $dirsrv_type,
+        }
     }    
 }
 }
