@@ -1,0 +1,86 @@
+// THIS FILE IS MANAGED BY PUPPET. ANY MANUAL CHANGES WILL GET OVERWRITTEN.
+
+// Java Security Manager rules for Pwm, the "Open Source Password Self Service
+// for LDAP directories". Tested on the following configuration
+//
+// - Pwm 1.7.1
+// - Ubuntu 14.04
+// - Tomcat 6 from the distribution's own repository
+//
+// Only the following Pwm features have been tested:
+//
+// - Create new user
+// - Update attributes
+// - Change password
+// - Password reset with email token
+// - CAPTCHA
+//
+// All of the rules might not be necessary because Pwm has evolved quite a lot
+// since this ruleset was first created.
+//
+// In case you have problems using this ruleset please fork this Puppet module
+// in GitHub and issue a pull request.
+//
+// Configuring the Java Security Manager for Tomcat is a pain. For a some help,
+// see these links:
+//
+//  http://java.sun.com/developer/onlineTraining/Programming/JDCBook/appA.html
+//  http://tomcat.apache.org/tomcat-5.5-doc/security-manager-howto.html
+//  http://java.sun.com/j2se/1.4.2/docs/guide/plugin/developer_guide/debugger.html
+//
+// The only good way to see what the security manager is doing is to boost it's
+// debugging by editing /etc/default/tomcat6:
+//
+//  JAVA_OPTS="-Djava.awt.headless=true -Xmx128M -Djava.security.debug=access"
+//
+// You can weed out failures with something like this:
+//
+// $ tail -n 0 -f /var/log/tomcat6/catalina.out|grep "access denied" 
+//
+// The log messages are trivial to convert into matching security manager
+// rules. Note that JSM can give very odd errors if there's a typo in this
+// file, or example a mistyped keyword (e.g. permission).
+
+grant codeBase "file:/var/lib/tomcat6/webapps/pwm/-" {
+    // This permission is useful for testing, but equals to not using Java
+    // Security Manager at all.
+    // permission java.security.AllPermission;
+
+    permission java.security.SecurityPermission "putProviderProperty.SaslClientFactory";
+    permission java.security.SecurityPermission "insertProvider.SaslClientFactory";
+    permission java.lang.RuntimePermission "createClassLoader";
+    permission java.lang.RuntimePermission "defineClassInPackage.java.util";
+    permission java.lang.RuntimePermission "getClassLoader";
+    permission java.lang.RuntimePermission "modifyThread";
+    permission java.lang.RuntimePermission "accessClassInPackage.org.apache.jasper";
+    permission java.lang.RuntimePermission "accessClassInPackage.sun.misc";
+    permission java.lang.RuntimePermission "defineClassInPackage.java.lang";
+    permission java.lang.RuntimePermission "defineClassInPackage.org.apache.jasper.runtime";
+    permission java.lang.RuntimePermission "accessClassInPackage.sun.util.logging.*";
+    permission java.lang.RuntimePermission "accessClassInPackage.org.apache.tomcat.*";
+    permission java.lang.RuntimePermission "getFileSystemAttributes";
+    permission java.io.FilePermission "/var/lib/tomcat6/webapps/pwm/META-INF/*", "read, execute";
+    permission java.io.FilePermission "/var/lib/tomcat6/webapps/pwm/WEB-INF/LocalDB", "read, write, delete, execute";
+    permission java.io.FilePermission "/var/lib/tomcat6/webapps/pwm/WEB-INF/LocalDB/-", "read, write, delete, execute";
+    permission java.io.FilePermission "/var/lib/tomcat6/webapps/pwm/WEB-INF/classes/-", "read";
+    permission java.io.FilePermission "/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/*", "read";
+    permission java.io.FilePermission "/var/lib/tomcat6/webapps/pwm/WEB-INF/-", "read, write";
+    permission java.io.FilePermission "/usr/share/javazi/ZoneInfoMappings", "read";
+    permission java.io.FilePermission "/usr/share/tomcat6/.mailcap", "read";
+    permission java.io.FilePermission "/WEB-INF/classes/org/apache/log4j/-", "read";
+
+    // Pwm requires so many PropertyPermissions that trying to whitelist them
+    // all is too painful.
+    permission java.util.PropertyPermission "*", "read, write";
+
+    // reCAPTCHA
+    permission java.net.SocketPermission "*","connect,resolve";
+
+    // LDAP connectivity
+    permission java.net.SocketPermission "127.0.0.1:389", "connect, resolve";
+
+    // Misc permissions
+    permission java.util.logging.LoggingPermission "control";
+    permission java.lang.reflect.ReflectPermission "suppressAccessChecks";
+    permission java.lang.management.ManagementPermission "monitor";
+};

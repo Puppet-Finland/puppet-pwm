@@ -40,6 +40,9 @@ class pwm::config
         require => Class['pwm::install'],
     }
 
+    # Tomcat configuration
+    include pwm::config::tomcat
+
     # Directory service-specific configuration
     case $dirsrv_type {
         '389ds': {
