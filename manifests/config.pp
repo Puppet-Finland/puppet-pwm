@@ -44,7 +44,7 @@ class pwm::config
     file { 'pwm-PwmConfiguration.xml':
         ensure => present,
         name => "${::tomcat::params::autodeploy_dir}/pwm/WEB-INF/PwmConfiguration.xml",
-        source => "puppet:///files/PwmConfiguration.xml",
+        source => "puppet:///files/pwm-PwmConfiguration-${::fqdn}.xml",
         owner => "${::tomcat::params::user}",
         group => "${::tomcat::params::group}",
         mode => 644,
