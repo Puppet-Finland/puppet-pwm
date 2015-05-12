@@ -7,6 +7,6 @@ class pwm::config::dirsrv inherits pwm::params
 {
     dirsrv::config::schema { 'pwm-99pwm':
         modulename => 'pwm',
-        basename => '99pwm',
+        basename   => '99pwm',
     }
 }

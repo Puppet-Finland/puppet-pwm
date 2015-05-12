@@ -10,8 +10,11 @@
 #
 # == Parameters
 #
+# [*manage*]
+#   Manage Pwm with Puppet. Valid values are 'yes' (default) and 'no'.
 # [*manage_config*]
-#   Manage Pwm configuration. Valid values 'yes' (default) and 'no'.
+#   Manage Pwm configuration with Puppet. Valid values are 'yes' (default) and 
+#   'no'.
 # [*dirsrv_type*]
 #   Directory server type. Currently only '389ds' is supported. The default 
 #   value is 'none', which means that auto-configuration of schemas is omitted.
@@ -26,21 +29,21 @@
 #
 class pwm
 (
+    $manage = 'yes',
     $manage_config = 'yes',
     $dirsrv_type = 'none'
 
 ) inherits pwm::params
 {
 
-# Rationale for this is explained in init.pp of the sshd module
-if hiera('manage_pwm', 'true') != 'false' {
+if $manage == 'yes' {
 
-    include pwm::install
+    include ::pwm::install
 
     if $manage_config == 'yes' {
-        class { 'pwm::config':
+        class { '::pwm::config':
             dirsrv_type => $dirsrv_type,
         }
-    }    
+    }
 }
 }
