@@ -68,6 +68,7 @@ grant codeBase "file:/var/lib/tomcat6/webapps/pwm/-" {
     permission java.io.FilePermission "/usr/share/javazi/ZoneInfoMappings", "read";
     permission java.io.FilePermission "/usr/share/tomcat6/.mailcap", "read";
     permission java.io.FilePermission "/WEB-INF/classes/org/apache/log4j/-", "read";
+    permission java.io.FilePermission "/var/lib/tomcat6/staging/pwm.war.d/WEB-INF/logs/*", "delete";
 
     // Pwm requires so many PropertyPermissions that trying to whitelist them
     // all is too painful.
