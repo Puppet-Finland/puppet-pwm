@@ -11,13 +11,13 @@
 # == Parameters
 #
 # [*manage*]
-#   Manage Pwm with Puppet. Valid values are 'yes' (default) and 'no'.
+#   Manage Pwm with Puppet. Valid values are true (default) and false.
 # [*manage_config*]
-#   Manage Pwm configuration with Puppet. Valid values are 'yes' (default) and 
-#   'no'.
+#   Manage Pwm configuration with Puppet. Valid values are true (default) and 
+#   false.
 # [*dirsrv_type*]
 #   Directory server type. Currently only '389ds' is supported. The default 
-#   value is 'none', which means that auto-configuration of schemas is omitted.
+#   value is undef, which means that auto-configuration of schemas is omitted.
 #
 # == Authors
 #   
@@ -29,18 +29,18 @@
 #
 class pwm
 (
-    $manage = 'yes',
-    $manage_config = 'yes',
-    $dirsrv_type = 'none'
+    Boolean $manage = true,
+    Boolean $manage_config = true,
+            $dirsrv_type = undef
 
 ) inherits pwm::params
 {
 
-if $manage == 'yes' {
+if $manage {
 
     include ::pwm::install
 
-    if $manage_config == 'yes' {
+    if $manage_config {
         class { '::pwm::config':
             dirsrv_type => $dirsrv_type,
         }

@@ -5,7 +5,7 @@
 #
 class pwm::config
 (
-    $dirsrv_type
+    Optional[Enum['389ds']] $dirsrv_type
 
 ) inherits pwm::params
 {
@@ -60,7 +60,7 @@ class pwm::config
         '389ds': {
             include ::pwm::config::dirsrv
         }
-        'none': {
+        undef: {
             # Do nothing
         }
         default: { fail("Invalid value ${dirsrv_type} for parameter \$dirsrv_type") }
