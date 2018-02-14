@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+#^syntax detection
+
+forge 'https://forgeapi.puppetlabs.com'
+
+mod 'puppetfinland-tomcat',
+    :git => 'https://github.com/Puppet-Finland/puppet-module-tomcat.git'
