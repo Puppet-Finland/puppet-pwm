@@ -5,3 +5,6 @@ forge 'https://forgeapi.puppetlabs.com'
 
 mod 'puppetfinland-tomcat',
     :git => 'https://github.com/Puppet-Finland/puppet-module-tomcat.git'
+
+mod 'puppetfinland-packetfilter',
+    :git => 'https://github.com/Puppet-Finland/packetfilter.git'
