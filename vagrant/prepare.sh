@@ -1,36 +1,81 @@
 #!/bin/sh
 #
-# Prepare modulepath prior to running "puppet apply". First parameter
-# should be the name of the module calling this script. This ensures that
-# this script can be reused in other Puppet modules.
+# Preparations required prior to "puppet apply".
 
-if [ "$1" = "" ]; then
-    echo "ERROR: module name not given as first parameter!"
+usage() {
+    echo
+    echo "Usage: prepare.sh -n module_name -f osfamily -o os"
+    echo
+    echo "Options:"
+    echo " -n   Name of the module that includes this script. Used to copy"
+    echo "      the module code to the modulepath."
+    echo " -f   Operating system family for this Vagrant VM. Valid values are"
+    echo "      redhat and debian. This determines the logic to use when"
+    echo "      installing Puppet on the nodes."
+    echo " -o   Operating system version. For Debian derivatives use the"
+    echo "      codename (e.g. stretch or xenial). For RedHat derivatives"
+    echo "      use the osname-osversion scheme (e.g. el-7). For details"
+    echo "      see Puppet Collections documentation"
+    echo " -b   Base directory for dependency Puppet modules installed by"
+    echo "      librarian-puppet."
     exit 1
+}
+
+
+# Parse the options
+
+# We are run without parameters -> usage
+if [ "$1" == "" ]; then
+        usage
 fi
 
-THIS_MODULE=$1
+while getopts "n:f:o:b:h" options; do
+  case $options in
+        n ) THIS_MODULE=$OPTARG;;
+        f ) OSFAMILY=$OPTARG;;
+        o ) OS=$OPTARG;;
+        b ) BASEDIR=$OPTARG;;
+        h ) usage;;
+        \? ) usage;;
+        * ) usage;;
+  esac
+done
+
 CWD=`pwd`
 
-# Install dependencies
-wget https://apt.puppetlabs.com/puppetlabs-release-pc1-xenial.deb -O puppetlabs-release-pc1-xenial.deb
-dpkg -i puppetlabs-release-pc1-xenial.deb
-apt-get update
-apt-get -y install git puppet-agent
-export PATH=$PATH:/opt/puppetlabs/bin
+install_puppet() {
+    if [ $OSFAMILY = 'redhat' ]; then
+        rpm -ivh https://yum.puppetlabs.com/puppetlabs-release-pc1-$OS.noarch.rpm
+        yum install -y puppet-agent yum-utils git
+        yum-config-manager --save --setopt=puppetlabs-pc1.skip_if_unavailable=true
+    elif [ $OSFAMILY = 'debian' ]; then
+        wget https://apt.puppetlabs.com/puppetlabs-release-pc1-$OS.deb -O puppetlabs-release-pc1-$OS.deb
+        dpkg -i puppetlabs-release-pc1-$OS.deb
+        apt-get update
+        apt-get -y install puppet-agent git
+    else
+        echo "ERROR: unsupported value ${OSFAMILY} for option -f!"
+        usage
+    fi
+}
+
+install_puppet
+
+export PATH=$PATH:/opt/puppetlabs/bin:/opt/puppetlabs/puppet/bin
+
+# Install librarian-puppet with Puppetlabs' gem and not a system gem
 /opt/puppetlabs/puppet/bin/gem install librarian-puppet
 
-# Prepare for librarian-puppet
-cd /home/ubuntu
+# Install dependency modules with librarian-puppet
+cd $BASEDIR
 mkdir -p modules
-cp /vagrant/vagrant/Puppetfile .
-
-# Run librarian-puppet
-/opt/puppetlabs/puppet/bin/librarian-puppet install
+rm -f Puppetfile
+ln -s /vagrant/vagrant/Puppetfile
+librarian-puppet install
 
 # Copy over this in-development module to modules
 # directory
-mkdir -p "modules/${THIS_MODULE}"
-cp -r /vagrant/* "modules/${THIS_MODULE}/"
+rm -f modules/${THIS_MODULE}
+ln -s /vagrant modules/${THIS_MODULE}
 
 cd $CWD

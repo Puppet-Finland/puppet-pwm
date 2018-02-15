@@ -12,12 +12,12 @@ Vagrant.configure("2") do |config|
     box.vm.network "forwarded_port", guest: 443, host: 8443
     box.vm.provision "shell" do |s|
       s.path = "vagrant/prepare.sh"
-      s.args = "pwm"
+      s.args = ["-n", "pwm", "-f", "debian", "-o", "xenial", "-b", "/home/ubuntu"]
     end
     box.vm.provision "shell", inline: "puppet apply --modulepath /home/ubuntu/modules /vagrant/vagrant/pwm.pp"
     box.vm.provider "virtualbox" do |vb|
       vb.gui = false
-      vb.memory = 1024
+      vb.memory = 1534
     end
   end
 end
