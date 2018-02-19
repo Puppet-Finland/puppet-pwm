@@ -8,8 +8,7 @@ Vagrant.configure("2") do |config|
     box.vm.box_version = "20171118.0.0"
     box.vm.hostname = "pwm.local"
     box.vm.network "private_network", ip: "192.168.103.100"
-    box.vm.network "forwarded_port", guest: 80, host: 8080
-    box.vm.network "forwarded_port", guest: 443, host: 8443
+    box.vm.network "forwarded_port", guest: 8080, host: 18080
     box.vm.provision "shell" do |s|
       s.path = "vagrant/prepare.sh"
       s.args = ["-n", "pwm", "-f", "debian", "-o", "xenial", "-b", "/home/ubuntu"]
