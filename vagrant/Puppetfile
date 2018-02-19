@@ -13,5 +13,6 @@ mod 'puppetfinland-packetfilter',
     :git => 'https://github.com/Puppet-Finland/packetfilter.git'
 
 mod 'puppetfinland-tomcat',
-    :git => 'https://github.com/Puppet-Finland/puppet-module-tomcat.git'
+    :git => 'https://github.com/Puppet-Finland/puppet-module-tomcat.git',
+    :tag => '1.1.0'
 
