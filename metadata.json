@@ -8,6 +8,7 @@
   "project_page": "https://github.com/Puppet-Finland/pwm",
   "dependencies": [
     { "name": "seteam-tomcat", "version_requirement": ">=0.1.0" },
-    { "name": "puppetfinland/dirsrv", "version_requirement": ">= 0.1.0" }
+    { "name": "puppetfinland/os", "version_requirement": ">= 1.0.1" },
+    { "name": "puppetlabs/vcsrepo", "version_requirement": ">= 2.0.0" }
   ]
 }

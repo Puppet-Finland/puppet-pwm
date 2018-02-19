@@ -2,6 +2,7 @@
 
 include ::tomcat
 
-ensure_resource('package','maven', { 'ensure' => 'present' })
-
-class { '::pwm': }
+class { '::pwm':
+    build      => true,
+    build_user => 'ubuntu',
+}

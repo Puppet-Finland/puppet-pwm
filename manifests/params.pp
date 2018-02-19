@@ -5,9 +5,11 @@
 #
 class pwm::params {
 
+    include ::os::params
+
     case $::osfamily {
         'Debian': {
-            # Nothing here
+            $build_deps = ['maven']
         }
         default: {
             fail("Unsupported operating system: ${::osfamily}/${::operatingsystem}")

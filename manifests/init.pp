@@ -15,6 +15,19 @@
 # [*manage_config*]
 #   Manage Pwm configuration with Puppet. Valid values are true (default) and 
 #   false.
+# [*build*]
+#   Build Pwm from sources. Primarily intended for use with Vagrant. Valid 
+#   values are true and false (default).
+# [*build_user*]
+#   User to build Pwm as. Primarily intended for use with Vagrant. No default 
+#   value. Note that building as 'root' does not seem to work and is hence
+#   prevented.
+# [*war_source*]
+#   Location of the pwm war file. Passed on to the ::tomcat::war resource when 
+#   $build is false. Defaults to 'puppet:///files/pwm.war' under the assumption 
+#   that in production enviroments a customized pwm.war is built outside of this 
+#   module and distributed via the Puppet fileserver. This parameter has no 
+#   effect if $build is true.
 #
 # == Authors
 #   
@@ -27,14 +40,22 @@
 class pwm
 (
     Boolean $manage = true,
-    Boolean $manage_config = true
+    Boolean $manage_config = true,
+            $build = false,
+            $build_user = undef,
+            $war_source = 'puppet:///files/pwm.war'
+
 
 ) inherits pwm::params
 {
 
 if $manage {
 
-    include ::pwm::install
+    class { '::pwm::install':
+        build      => $build,
+        build_user => $build_user,
+        war_source => $war_source,
+    }
 
     if $manage_config {
         include ::pwm::config
