@@ -7,8 +7,7 @@ class pwm::params {
 
     case $::osfamily {
         'Debian': {
-            # 389 DS main configuration directory
-            $dirsrv_config_dir = '/etc/dirsrv'
+            # Nothing here
         }
         default: {
             fail("Unsupported operating system: ${::osfamily}/${::operatingsystem}")

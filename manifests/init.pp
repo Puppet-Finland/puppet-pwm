@@ -15,9 +15,6 @@
 # [*manage_config*]
 #   Manage Pwm configuration with Puppet. Valid values are true (default) and 
 #   false.
-# [*dirsrv_type*]
-#   Directory server type. Currently only '389ds' is supported. The default 
-#   value is undef, which means that auto-configuration of schemas is omitted.
 #
 # == Authors
 #   
@@ -30,8 +27,7 @@
 class pwm
 (
     Boolean $manage = true,
-    Boolean $manage_config = true,
-            $dirsrv_type = undef
+    Boolean $manage_config = true
 
 ) inherits pwm::params
 {
@@ -41,9 +37,7 @@ if $manage {
     include ::pwm::install
 
     if $manage_config {
-        class { '::pwm::config':
-            dirsrv_type => $dirsrv_type,
-        }
+        include ::pwm::config
     }
 }
 }

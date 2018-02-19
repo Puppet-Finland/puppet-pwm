@@ -3,11 +3,7 @@
 #
 # Configure pwm
 #
-class pwm::config
-(
-    Optional[Enum['389ds']] $dirsrv_type
-
-) inherits pwm::params
+class pwm::config inherits pwm::params
 {
 
     include ::tomcat::params
@@ -50,19 +46,7 @@ class pwm::config
         mode    => '0644',
         require => Class['pwm::install'],
     }
-    
 
     # Tomcat configuration
     include ::pwm::config::tomcat
-
-    # Directory service-specific configuration
-    case $dirsrv_type {
-        '389ds': {
-            include ::pwm::config::dirsrv
-        }
-        undef: {
-            # Do nothing
-        }
-        default: { fail("Invalid value ${dirsrv_type} for parameter \$dirsrv_type") }
-    }
 }
