@@ -3,7 +3,7 @@
 #
 # A Puppet module for managing Pwm:
 #
-# <https://code.google.com/p/pwm>
+# https://github.com/pwm-project/pwm
 #
 # Note that the module expects to find pwm.war at the root of the Puppet 
 # fileserver. This could be avoided if Pwm was packaged for Debian.
