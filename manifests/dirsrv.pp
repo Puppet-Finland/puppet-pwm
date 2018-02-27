@@ -3,7 +3,7 @@
 #
 # Install Pwm schemas to 389 Directory Server
 #
-class pwm::dirsrv inherits pwm::params {
+class pwm::dirsrv {
 
     include ::dirsrv::params
 
