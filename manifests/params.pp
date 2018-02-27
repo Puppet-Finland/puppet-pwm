@@ -10,6 +10,7 @@ class pwm::params {
     case $::osfamily {
         'Debian': {
             $build_deps = ['maven']
+            $application_path = '/etc/pwm'
         }
         default: {
             fail("Unsupported operating system: ${::osfamily}/${::operatingsystem}")

@@ -28,6 +28,11 @@
 #   that in production enviroments a customized pwm.war is built outside of this 
 #   module and distributed via the Puppet fileserver. This parameter has no 
 #   effect if $build is true.
+# [*config_source*]
+#   Location of a customized PwmConfiguration.xml file. Passed on to the Puppet 
+#   File resource "source" parameter. Defaults to 
+#   "puppet:///files/pwm-PwmConfiguration-${::fqdn}.xml" under the assumption 
+#   that a customized configuration file is distributed via Puppet fileserver.
 #
 # == Authors
 #   
@@ -43,7 +48,8 @@ class pwm
     Boolean $manage_config = true,
             $build = false,
             $build_user = undef,
-            $war_source = 'puppet:///files/pwm.war'
+            $war_source = 'puppet:///files/pwm.war',
+            $config_source = "puppet:///files/pwm-PwmConfiguration-${::fqdn}.xml"
 
 
 ) inherits pwm::params
@@ -58,7 +64,9 @@ if $manage {
     }
 
     if $manage_config {
-        include ::pwm::config
+        class { '::pwm::config':
+            config_source => $config_source,
+        }
     }
 }
 }

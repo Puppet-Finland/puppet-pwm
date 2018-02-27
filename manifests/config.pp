@@ -3,48 +3,64 @@
 #
 # Configure pwm
 #
-class pwm::config inherits pwm::params
+class pwm::config
+(
+    String $config_source
+
+) inherits pwm::params
 {
 
     include ::tomcat::params
 
-    # Allow pwm to write to the webapp directories it needs
-    file { 'pwm-WEB-INF':
-        ensure  => directory,
-        name    => "${::tomcat::params::autodeploy_dir}/pwm/WEB-INF",
+    File {
+        ensure  => 'directory',
         owner   => $::tomcat::params::user,
         group   => $::tomcat::params::group,
         mode    => '0755',
-        require => Class['pwm::install'],
+    }
+
+    # Create a configuration directory for Pwm (older versions modified the 
+    # files under the webapp directory directly)
+    file { 'pwm-application_path':
+        name => $::pwm::params::application_path,
     }
 
     file { 'pwm-logs':
-        ensure  => directory,
-        name    => "${::tomcat::params::autodeploy_dir}/pwm/WEB-INF/logs",
-        owner   => $::tomcat::params::user,
-        group   => $::tomcat::params::group,
-        mode    => '0755',
+        name    => "${::pwm::params::application_path}/logs",
+        require => File['pwm-application_path'],
+    }
+
+    file { 'pwm-temp':
+        name    => "${::pwm::params::application_path}/temp",
+        require => File['pwm-application_path'],
+    }
+
+    # Allow pwm to write to the webapp directories it needs
+    file { 'pwm-WEB-INF':
+        name    => "${::tomcat::params::autodeploy_dir}/pwm/WEB-INF",
         require => Class['pwm::install'],
     }
 
     file { 'pwm-LocalDB':
-        ensure  => directory,
         name    => "${::tomcat::params::autodeploy_dir}/pwm/WEB-INF/LocalDB",
-        owner   => $::tomcat::params::user,
-        group   => $::tomcat::params::group,
-        mode    => '0755',
         require => Class['pwm::install'],
+    }
+
+    # Set Pwm application path
+    augeas { 'pwm applicationPath':
+        incl    => "${::tomcat::params::autodeploy_dir}/pwm/WEB-INF/web.xml",
+        lens    => 'Xml.lns',
+        changes => "set web-app/context-param/param-value/#text ${::pwm::params::application_path}",
+        require => Class['::pwm::install'],
+        notify  => Class['::tomcat::service'],
     }
 
     # Pwm webapp configuration
     file { 'pwm-PwmConfiguration.xml':
         ensure  => present,
-        name    => "${::tomcat::params::autodeploy_dir}/pwm/WEB-INF/PwmConfiguration.xml",
-        source  => "puppet:///files/pwm-PwmConfiguration-${::fqdn}.xml",
-        owner   => $::tomcat::params::user,
-        group   => $::tomcat::params::group,
+        name    => "${::pwm::params::application_path}/PwmConfiguration.xml",
+        source  => $config_source,
         mode    => '0644',
-        require => Class['pwm::install'],
     }
 
     # Tomcat configuration
