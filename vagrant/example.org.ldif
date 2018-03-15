@@ -1,0 +1,298 @@
+version: 1
+
+# entry-id: 1
+dn: dc=example,dc=org
+nsUniqueId: 24d0ef25-284f11e8-99cfd357-c2b85005
+objectClass: top
+objectClass: domain
+dc: example
+aci: (targetattr!="userPassword || aci")(version 3.0; acl "Enable anonymous ac
+ cess"; allow (read, search, compare) userdn="ldap:///anyone";)
+aci: (targetattr="carLicense || description || displayName || facsimileTelepho
+ neNumber || homePhone || homePostalAddress || initials || jpegPhoto || labele
+ dURI || mail || mobile || pager || photo || postOfficeBox || postalAddress ||
+  postalCode || preferredDeliveryMethod || preferredLanguage || registeredAddr
+ ess || roomNumber || secretary || seeAlso || st || street || telephoneNumber 
+ || telexNumber || title || userCertificate || userPassword || userSMIMECertif
+ icate || x500UniqueIdentifier")(version 3.0; acl "Enable self write for commo
+ n attributes"; allow (write) userdn="ldap:///self";)
+aci: (targetattr ="*")(version 3.0;acl "Directory Administrators Group";allow 
+ (all) (groupdn = "ldap:///cn=Directory Administrators, dc=example,dc=org");)
+aci: (targetattr="*")(version 3.0; acl "Configuration Administrators Group"; a
+ llow (all) groupdn="ldap:///cn=Configuration Administrators,ou=Groups,ou=Topo
+ logyManagement,o=NetscapeRoot";)
+aci: (targetattr="*")(version 3.0; acl "Configuration Administrator"; allow (a
+ ll) userdn="ldap:///uid=admin,ou=Administrators,ou=TopologyManagement,o=Netsc
+ apeRoot";)
+aci: (targetattr = "*")(version 3.0; acl "SIE Group"; allow (all) groupdn = "l
+ dap:///cn=slapd-vagrant,cn=389 Directory Server,cn=Server Group,cn=pwm-dirsrv
+ .local,ou=local,o=NetscapeRoot";)
+creatorsName:
+modifiersName: cn=directory manager
+createTimestamp: 20180315124822Z
+modifyTimestamp: 20180315124823Z
+
+# entry-id: 2
+dn: cn=Directory Administrators,dc=example,dc=org
+nsUniqueId: 24d0ef26-284f11e8-99cfd357-c2b85005
+objectClass: top
+objectClass: groupofuniquenames
+cn: Directory Administrators
+uniqueMember: cn=Directory Manager
+creatorsName:
+modifiersName:
+createTimestamp: 20180315124822Z
+modifyTimestamp: 20180315124822Z
+
+# entry-id: 3
+dn: ou=Groups,dc=example,dc=org
+nsUniqueId: 24d0ef27-284f11e8-99cfd357-c2b85005
+objectClass: top
+objectClass: organizationalunit
+ou: Groups
+creatorsName:
+modifiersName:
+createTimestamp: 20180315124822Z
+modifyTimestamp: 20180315124822Z
+
+# entry-id: 4
+dn: ou=People,dc=example,dc=org
+nsUniqueId: 24d0ef28-284f11e8-99cfd357-c2b85005
+objectClass: top
+objectClass: organizationalunit
+ou: People
+aci: (targetattr !="cn || sn || uid")(targetfilter ="(ou=Accounting)")(version
+  3.0;acl "Accounting Managers Group Permissions";allow (write)(groupdn = "lda
+ p:///cn=Accounting Managers,ou=groups,dc=example,dc=org");)
+aci: (targetattr !="cn || sn || uid")(targetfilter ="(ou=Human Resources)")(ve
+ rsion 3.0;acl "HR Group Permissions";allow (write)(groupdn = "ldap:///cn=HR M
+ anagers,ou=groups,dc=example,dc=org");)
+aci: (targetattr !="cn ||sn || uid")(targetfilter ="(ou=Product Testing)")(ver
+ sion 3.0;acl "QA Group Permissions";allow (write)(groupdn = "ldap:///cn=QA Ma
+ nagers,ou=groups,dc=example,dc=org");)
+aci: (targetattr !="cn || sn || uid")(targetfilter ="(ou=Product Development)"
+ )(version 3.0;acl "Engineering Group Permissions";allow (write)(groupdn = "ld
+ ap:///cn=PD Managers,ou=groups,dc=example,dc=org");)
+aci: (targetattr = "*") (version 3.0;acl "Pwmproxy read-write";allow (read,com
+ pare,search,selfwrite,write,add)(userdn = "ldap:///uid=pwmproxy,ou=People,dc=
+ example,dc=org");)
+aci: (targetattr = "userPassword || pwmResponseSet || telep honeNumber || facs
+ imileTelephoneNumber") (version 3.0;acl "Allow self entry modification";allow
+ (write)(userdn = "ldap:///self");)
+creatorsName:
+modifiersName: uid=admin,ou=administrators,ou=topologymanagement,o=netscaperoo
+ t
+createTimestamp: 20180315124822Z
+modifyTimestamp: 20180315154314Z
+
+# entry-id: 5
+dn: ou=Special Users,dc=example,dc=org
+nsUniqueId: 24d0ef29-284f11e8-99cfd357-c2b85005
+objectClass: top
+objectClass: organizationalUnit
+ou: Special Users
+description: Special Administrative Accounts
+creatorsName:
+modifiersName:
+createTimestamp: 20180315124822Z
+modifyTimestamp: 20180315124822Z
+
+# entry-id: 6
+dn: cn=Accounting Managers,ou=Groups,dc=example,dc=org
+nsUniqueId: 24d0ef2a-284f11e8-99cfd357-c2b85005
+objectClass: top
+objectClass: groupOfUniqueNames
+cn: Accounting Managers
+ou: groups
+description: People who can manage accounting entries
+uniqueMember: cn=Directory Manager
+creatorsName:
+modifiersName:
+createTimestamp: 20180315124822Z
+modifyTimestamp: 20180315124822Z
+
+# entry-id: 7
+dn: cn=HR Managers,ou=Groups,dc=example,dc=org
+nsUniqueId: 24d0ef2b-284f11e8-99cfd357-c2b85005
+objectClass: top
+objectClass: groupOfUniqueNames
+cn: HR Managers
+ou: groups
+description: People who can manage HR entries
+uniqueMember: cn=Directory Manager
+creatorsName:
+modifiersName:
+createTimestamp: 20180315124822Z
+modifyTimestamp: 20180315124822Z
+
+# entry-id: 8
+dn: cn=QA Managers,ou=Groups,dc=example,dc=org
+nsUniqueId: 24d0ef2c-284f11e8-99cfd357-c2b85005
+objectClass: top
+objectClass: groupOfUniqueNames
+cn: QA Managers
+ou: groups
+description: People who can manage QA entries
+uniqueMember: cn=Directory Manager
+creatorsName:
+modifiersName:
+createTimestamp: 20180315124822Z
+modifyTimestamp: 20180315124822Z
+
+# entry-id: 9
+dn: cn=PD Managers,ou=Groups,dc=example,dc=org
+nsUniqueId: 24d0ef2d-284f11e8-99cfd357-c2b85005
+objectClass: top
+objectClass: groupOfUniqueNames
+cn: PD Managers
+ou: groups
+description: People who can manage engineer entries
+uniqueMember: cn=Directory Manager
+creatorsName:
+modifiersName:
+createTimestamp: 20180315124822Z
+modifyTimestamp: 20180315124822Z
+
+# entry-id: 10
+dn: uid=john.doe,ou=People,dc=example,dc=org
+nsUniqueId: c7d83781-285411e8-959693f9-ed5609ea
+mail: john.doe@example.org
+givenName: John
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetorgperson
+objectClass: pwmUser
+sn: Doe
+cn: john.doe
+userPassword:: e1NTSEE1MTJ9dUJaZG9ya04zUUNBcUF6YjNaYmgwK0FZT1NaZkNzdkZUT0hsL3Y
+ 0bHNPWnNJM1o1aENpNzRYdzhMZEJWSjhtcG9URm42aDh6dE1qMHhTazM3RGhYaGw4SE1BOTdGb21L
+creatorsName: uid=admin,ou=administrators,ou=topologymanagement,o=netscaperoot
+modifiersName: uid=admin,ou=administrators,ou=topologymanagement,o=netscaperoo
+ t
+createTimestamp: 20180315132913Z
+modifyTimestamp: 20180315161528Z
+uid: john.doe
+pwmResponseSet: 0002#.#.#<?xml version="1.0" encoding="UTF-8"?><ResponseSet mi
+ nRandomRequired="2" locale="en" version="2" chaiVersion="0.7.0" caseInsensiti
+ ve="true" challengeSetID="PWM-defined v1.8.0-SNAPSHOT b0 r0" time="2018-03-15
+  15:44:43 +0000"><response adminDefined="true" required="false" minLength="4"
+  maxLength="200"><challenge>What is the name of the main character in your fa
+ vorite book?</challenge><answer salt="saLsN4IvRr0OLfc8rU6dG43Hb7SmxxFe" forma
+ t="PBKDF2_SHA512" hashcount="100000">+txjBpdi8B0/iXBQofph9VRIiuNSdYHLXZ3Zeq2T
+ I7nrlw4Huxt1EbwhH7ImoP+ImqvTANK1jH95QRqQWAjEo571lS6LXnTt3P8yGrzZLyBAZZhXakkKN
+ w87y/kmVqv5s0vb8w4BfhCs7fQu4sCI4Je4oNm5WsozIgjzHyXqJvuAaE/INBVDnJlk/Xu0h+zncH
+ STt12CAi8CwiT099ERufeNGB5JoiPBb94aMCz+BBtJwgR1mguawRZF0ieI85Ou</answer></resp
+ onse><response adminDefined="true" required="false" minLength="4" maxLength="
+ 200"><challenge>What is the name of your favorite pet?</challenge><answer sal
+ t="k4ERLJEySHYvS49cARGtMf7qWnD1Om4n" format="PBKDF2_SHA512" hashcount="100000
+ ">0P965KzMQBY2z3tOwsDg/I7TT5OAxiP7h2NZUvGqYzg0z3KxPFcWLlavwgU7EeSqzHWjpIKOz4l
+ pxboAlYYW+zcR5xxhlMvB2WYYBG97K5asksgauconyx1PiywA2L+1EefruQFgOP6xGmFjb9vuuNsl
+ L6EzbiGvoY02DGzVjVtuPAmj6kHimRUmsgi36NCLXMRj1W7UCcCBervB1GqMIEdTy2S+QuoK17r2X
+ 0NjWYiA7yEhs4yfx5mgS5793Tk6</answer></response><response adminDefined="true" 
+ required="false" minLength="4" maxLength="200"><challenge>What is your favori
+ te food?</challenge><answer salt="v0zMUL9Vg3XpFrCisj02l5TIHmC7DNCC" format="P
+ BKDF2_SHA512" hashcount="100000">lEd8EE5wTadGP1NuxIIP8qMbHZOCKQEAe2RK8wMSftNN
+ hXfy5PmYbyHG4NzCik94m8h2e5ZZh5dJ15I8xcYM4XVniTtQ1Ciw2sPCZ6Ns73iOUUao4dYcxxZ3j
+ j4j/jMvMf1Dggh3R6xWs9jn+dz9kjnZhgycQAjO1E4XF5Z5ezNDGLq7KJqk92hpQ0nlCwGvtsqQf6
+ Sel0csmlJTn/VADDtZOCMsArIzHvg0TqbqNqctG4Oq3z/mLVBB37Zb0ZoE</answer></response
+ ><response adminDefined="true" required="false" minLength="4" maxLength="200"
+ ><challenge>Who was your least favorite teacher?</challenge><answer salt="ljL
+ vBAQ9VMEIsJetyt1yea7rG35RqZTl" format="PBKDF2_SHA512" hashcount="100000">iZez
+ aOfNey/uDVChfVqQvrlGTrKKCeuxABguNDZOaq6zvm8DS5ZOyOtUszDDslPQU3vjHyOOq3Q6AA5rm
+ ecPwGrea7mhbMQgwE8UBvHZf89JbipItRouxSoNDz6/QcaZDLOTt5CEFcFEtX2crSR/Q7T9qz/3oc
+ 1v4LGqZ7fA/kcTNiV/ml7+SPhsjt4pgnr/vtjg1dTmyRojqSX/BO2MoAI9Rro8YKr/n6UiLhFnQ97
+ +mBwi9xrFUy2PzWPazLuU</answer></response></ResponseSet>
+passwordGraceUserTime: 0
+pwmLastPwdUpdate: 20180315154535Z
+pwmEventLog:: MDAwMSMuIy4jPD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4N
+ CjxoaXN0b3J5PjxyZWNvcmQgdGltZXN0YW1wPSIxNTIxMTI4NjIwODI2IiBldmVudENvZGU9IkV2Z
+ W50TG9nX1NldHVwUmVzcG9uc2VzIiBzcmNJUD0iMTkyLjE2OC4xMDMuMSIgc3JjSG9zdD0iMTkyLj
+ E2OC4xMDMuMSIgLz48cmVjb3JkIHRpbWVzdGFtcD0iMTUyMTEyODYzOTcyMCIgZXZlbnRDb2RlPSJ
+ FdmVudExvZ19DbGVhclJlc3BvbnNlcyIgc3JjSVA9IjE5Mi4xNjguMTAzLjEiIHNyY0hvc3Q9IjE5
+ Mi4xNjguMTAzLjEiIC8+PHJlY29yZCB0aW1lc3RhbXA9IjE1MjExMjg2ODM1MTUiIGV2ZW50Q29kZ
+ T0iRXZlbnRMb2dfU2V0dXBSZXNwb25zZXMiIHNyY0lQPSIxOTIuMTY4LjEwMy4xIiBzcmNIb3N0PS
+ IxOTIuMTY4LjEwMy4xIiAvPjxyZWNvcmQgdGltZXN0YW1wPSIxNTIxMTI4NzM1MDg4IiBldmVudEN
+ vZGU9IkV2ZW50TG9nX0NoYW5nZVBhc3N3b3JkIiBzcmNJUD0iMTkyLjE2OC4xMDMuMSIgc3JjSG9z
+ dD0iMTkyLjE2OC4xMDMuMSIgLz48L2hpc3Rvcnk+DQo=
+
+# entry-id: 11
+dn: uid=jane.doe,ou=People,dc=example,dc=org
+nsUniqueId: eb9b7d81-285411e8-959693f9-ed5609ea
+mail: jane.doe@example.org
+uid: jane.doe
+givenName: Jane
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetorgperson
+objectClass: pwmUser
+sn: Doe
+cn: jane.doe
+userPassword:: e1NTSEE1MTJ9cW9LOHo5ZnpCS1ZoN1FWV3RBdUtIa0hzY2hjUTRVWlhndW1lL3V
+ WcEdKc3ZQQVJEWXFoRE8va0x6RlVRWDl2WlhLNG55SnQ1V210Mlg1K3ZDakc1aS9ZWnBkRW5sZFd3
+creatorsName: uid=admin,ou=administrators,ou=topologymanagement,o=netscaperoot
+modifiersName: uid=admin,ou=administrators,ou=topologymanagement,o=netscaperoo
+ t
+createTimestamp: 20180315133038Z
+modifyTimestamp: 20180315161519Z
+passwordGraceUserTime: 0
+
+# entry-id: 12
+dn: uid=ken,ou=People,dc=example,dc=org
+nsUniqueId: c22f2181-285511e8-959693f9-ed5609ea
+mail: ken.thompson@example.org
+uid: ken
+givenName: Ken
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetorgperson
+objectClass: inetuser
+sn: Thompson
+cn: ken
+userPassword:: e1NTSEE1MTJ9TENsNm1kdEpDUlNLdGEwcGtsbVZ2K2ROS2ZWZkY3T08xeWNleXR
+ zWU85dHByUFBLclNxakpOY2k1MmtwczI4czA5ME9zZUNFaTVuNkQzWG9rNG1nZ05WdEFSUFVId2x1
+creatorsName: uid=admin,ou=administrators,ou=topologymanagement,o=netscaperoot
+modifiersName: uid=admin,ou=administrators,ou=topologymanagement,o=netscaperoo
+ t
+createTimestamp: 20180315133601Z
+modifyTimestamp: 20180315161536Z
+memberOf: cn=Pwm Administrators,ou=Groups,dc=example,dc=org
+
+# entry-id: 13
+dn: cn=Pwm Administrators,ou=Groups,dc=example,dc=org
+nsUniqueId: c22f2182-285511e8-959693f9-ed5609ea
+description: People with access to Pwm's administrative functions
+objectClass: top
+objectClass: groupofuniquenames
+cn: Pwm Administrators
+creatorsName: uid=admin,ou=administrators,ou=topologymanagement,o=netscaperoot
+modifiersName: uid=admin,ou=administrators,ou=topologymanagement,o=netscaperoo
+ t
+createTimestamp: 20180315133642Z
+modifyTimestamp: 20180315143443Z
+aci: (targetattr = "*") (target = "ldap:///cn=Pwm Administrators, ou=Groups,dc
+ =example,dc=org") (version 3.0;acl "Pwmproxy";allow (read,compare,search)(use
+ rdn = "ldap:///uid=pwmproxy,ou=People,dc=example,dc=org");)
+uniqueMember: uid=ken,ou=People,dc=example,dc=org
+
+# entry-id: 14
+dn: uid=pwmproxy,ou=People,dc=example,dc=org
+nsUniqueId: 2d78f381-285611e8-959693f9-ed5609ea
+uid: pwmproxy
+givenName: pwm
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetorgperson
+sn: proxy
+cn: pwmproxy
+userPassword:: e1NTSEE1MTJ9c3VJc2RRdHVJbTZKT3dJc202NGxrMThLNUppeHFHSjAwcGI2MVl
+ 1Tm9ERXE4cFZrZWlvYkltbjJWYlEyV0xjeVo5NWRuV0M1QlIrZGVsdGJreUdKOG52WU4vV2E1djJK
+creatorsName: uid=admin,ou=administrators,ou=topologymanagement,o=netscaperoot
+modifiersName: uid=admin,ou=administrators,ou=topologymanagement,o=netscaperoo
+ t
+createTimestamp: 20180315133900Z
+modifyTimestamp: 20180315133900Z
+

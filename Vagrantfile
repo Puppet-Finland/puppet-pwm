@@ -31,6 +31,7 @@ Vagrant.configure("2") do |config|
       s.args = ["-n", "pwm", "-f", "redhat", "-o", "el-7", "-b", "/home/vagrant"]
     end
     box.vm.provision "shell", inline: "puppet apply --modulepath /home/vagrant/modules /vagrant/vagrant/dirsrv.pp"
+    box.vm.provision "shell", inline: "/vagrant/vagrant/prepare-directory.sh"
     box.vm.provider "virtualbox" do |vb|
       vb.gui = false
       vb.memory = 1024
