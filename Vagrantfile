@@ -8,7 +8,6 @@ Vagrant.configure("2") do |config|
     box.vm.box_version = "20171118.0.0"
     box.vm.hostname = "pwm.local"
     box.vm.network "private_network", ip: "192.168.103.100"
-    box.vm.network "forwarded_port", guest: 8080, host: 18080
     box.vm.synced_folder ".", "/vagrant", type: "virtualbox"
     box.vm.provision "shell" do |s|
       s.path = "vagrant/prepare.sh"
@@ -26,8 +25,6 @@ Vagrant.configure("2") do |config|
     box.vm.box_version = "1710.01"
     box.vm.hostname = "pwm-dirsrv.local"
     box.vm.network "private_network", ip: "192.168.103.101"
-    box.vm.network "forwarded_port", guest: 9830, host: 19830
-    box.vm.network "forwarded_port", guest: 389, host: 10389
     box.vm.synced_folder ".", "/vagrant", type: "virtualbox"
     box.vm.provision "shell" do |s|
       s.path = "vagrant/prepare.sh"
