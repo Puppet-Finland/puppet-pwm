@@ -1,0 +1,5 @@
+dn: cn=slapd-vagrant,cn=389 Directory Server,cn=Server Group,cn=pwm-dirsrv.local,ou=local,o=NetscapeRoot
+changetype: modify
+replace: nsServerSecurity
+nsServerSecurity: on
+

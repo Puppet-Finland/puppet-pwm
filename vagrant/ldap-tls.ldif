@@ -1,0 +1,7 @@
+dn: cn=config
+changetype: modify
+replace: nsslapd-securePort
+nsslapd-securePort: 636
+-
+replace: nsslapd-security
+nsslapd-security: on
