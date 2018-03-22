@@ -6,10 +6,12 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin
 DBPATH="/etc/dirsrv/slapd-vagrant"
 ADMIN_DBPATH="/etc/dirsrv/admin-serv"
 PINFILE="$DBPATH/pin.txt"
+ADMIN_PINFILE="$ADMIN_DBPATH/pin.txt"
 PASSFILE="/tmp/pass"
 PK12FILE="/tmp/keys.pk12"
 PASS="vagrant"
 NOISE="/tmp/noise"
+NSS_CONF="$ADMIN_DBPATH/nss.conf"
 
 # Do not pull the carpet from beneath 389ds
 systemctl stop dirsrv@vagrant
@@ -19,11 +21,6 @@ rm -f $ADMIN_DBPATH/*.db $DBPATH/*.db $PINFILE $PASSFILE
 
 # Import a minimal database (dc=example,dc=org) modified to work with Pwm
 ldif2db -Z vagrant -s 'dc=example,dc=org' -i /vagrant/vagrant/example.org.ldif
-
-# Ensure that dirsrv does not prompt for password when it restarts
-echo "Internal (Software) Token:$PASS" > $PINFILE
-chown dirsrv:dirsrv $PINFILE
-chmod 400 $PINFILE
 
 # Enable TLS using a self-signed SSL certificate. Adapted from here:
 #
@@ -38,18 +35,25 @@ rm -f $NOISE
 chown dirsrv:dirsrv $DBPATH/*.db
 chmod 600 $DBPATH/*.db
 
+# Ensure that dirsrv does not prompt for password when it restarts
+echo "Internal (Software) Token:$PASS" > $PINFILE
+chown dirsrv:dirsrv $PINFILE
+chmod 400 $PINFILE
+
 # Start the directory server so that we can ldapmodify/add
 systemctl start dirsrv@vagrant
 
-# Enable various features:
-#
-# - memberOf plugin
-# - TLS for LDAP connections
-# - TLS for admin connections
-#
-for i in memberOf ldap-tls admin-tls; do
-    ldapmodify -D "cn=Directory Manager" -w $PASS -p 389 -h pwm-dirsrv.local -x -f /vagrant/vagrant/$i.ldif
-done
+# Enable memberOf plugin
+ldapmodify -D "cn=Directory Manager" -w $PASS -p 389 -h pwm-dirsrv.local -x -f /vagrant/vagrant/memberOf.ldif
+
+# Enable TLS and set the LDAPS port for Directory Server
+ldapmodify -D "cn=Directory Manager" -w $PASS -p 389 -h pwm-dirsrv.local -x -f /vagrant/vagrant/ldap-tls.ldif
+
+# Enable TLS for Connections from the Console to Directory Server
+ldapmodify -D "cn=Directory Manager" -w $PASS -p 389 -h pwm-dirsrv.local -x -f /vagrant/vagrant/console-dirsrv.ldif
+
+# Enable RSA
+ldapadd -D "cn=Directory Manager" -w $PASS -p 389 -h pwm-dirsrv.local -x -f /vagrant/vagrant/rsa.ldif
 
 # Restart to activate the memberOf plugin
 systemctl restart dirsrv@vagrant
@@ -66,4 +70,18 @@ chmod 600 $ADMIN_DBPATH/*.db
 
 rm -f $PK12FILE
 
+# Add password file for dirsrv-admin
+echo "internal:$PASS" > $ADMIN_PINFILE
+chown dirsrv:dirsrv $ADMIN_PINFILE
+chmod 400 $ADMIN_PINFILE
+
+# Make admin-serv use the passphrase file while retaining file permissions
+cp $ADMIN_DBPATH/nss.conf $ADMIN_DBPATH/nss.conf.dist
+cat /vagrant/vagrant/nss.conf > $ADMIN_DBPATH/nss.conf
+
+# Enable TLS in the Administration Server config
+sed -i s/"configuration.nsServerSecurity: off"/"configuration.nsServerSecurity: on"/g $ADMIN_DBPATH/local.conf
+sed -i s/"NSSEngine off"/"NSSEngine on"/g $ADMIN_DBPATH/console.conf
+
 systemctl start dirsrv-admin
+
