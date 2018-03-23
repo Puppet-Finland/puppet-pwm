@@ -4,6 +4,7 @@
 #
 PATH=/bin:/sbin:/usr/bin:/usr/sbin
 INSTANCE="vagrant"
+SOURCE_DIR="/vagrant/vagrant"
 DBPATH="/etc/dirsrv/slapd-$INSTANCE"
 ADMIN_DBPATH="/etc/dirsrv/admin-serv"
 PINFILE="$DBPATH/pin.txt"
@@ -21,7 +22,7 @@ systemctl stop dirsrv@$INSTANCE
 rm -f $ADMIN_DBPATH/*.db $DBPATH/*.db $PINFILE $PASSFILE
 
 # Import a minimal database (dc=example,dc=org) modified to work with Pwm
-ldif2db -Z $INSTANCE -s 'dc=example,dc=org' -i /vagrant/vagrant/example.org.ldif
+ldif2db -Z $INSTANCE -s 'dc=example,dc=org' -i $SOURCE_DIR/example.org.ldif
 
 # Enable TLS using a self-signed SSL certificate. Adapted from here:
 #
@@ -45,16 +46,16 @@ chmod 400 $PINFILE
 systemctl start dirsrv@$INSTANCE
 
 # Enable memberOf plugin
-ldapmodify -D "cn=Directory Manager" -w $PASS -x -f /vagrant/vagrant/memberOf.ldif
+ldapmodify -D "cn=Directory Manager" -w $PASS -x -f $SOURCE_DIR/memberOf.ldif
 
 # Enable TLS and set the LDAPS port for Directory Server
-ldapmodify -D "cn=Directory Manager" -w $PASS -x -f /vagrant/vagrant/ldap-tls.ldif
+ldapmodify -D "cn=Directory Manager" -w $PASS -x -f $SOURCE_DIR/ldap-tls.ldif
 
 # Enable TLS for Connections from the Console to Directory Server
-ldapmodify -D "cn=Directory Manager" -w $PASS -x -f /vagrant/vagrant/console-dirsrv.ldif
+ldapmodify -D "cn=Directory Manager" -w $PASS -x -f $SOURCE_DIR/console-dirsrv.ldif
 
 # Enable RSA
-ldapadd -D "cn=Directory Manager" -w $PASS -x -f /vagrant/vagrant/rsa.ldif
+ldapadd -D "cn=Directory Manager" -w $PASS -x -f $SOURCE_DIR/rsa.ldif
 
 # Restart to activate the memberOf plugin
 systemctl restart dirsrv@$INSTANCE
@@ -78,11 +79,10 @@ chmod 400 $ADMIN_PINFILE
 
 # Make admin-serv use the passphrase file while retaining file permissions
 cp $ADMIN_DBPATH/nss.conf $ADMIN_DBPATH/nss.conf.dist
-cat /vagrant/vagrant/nss.conf > $ADMIN_DBPATH/nss.conf
+cat $SOURCE_DIR/nss.conf > $ADMIN_DBPATH/nss.conf
 
 # Enable TLS in the Administration Server config
 sed -i s/"configuration.nsServerSecurity: off"/"configuration.nsServerSecurity: on"/g $ADMIN_DBPATH/local.conf
 sed -i s/"NSSEngine off"/"NSSEngine on"/g $ADMIN_DBPATH/console.conf
 
 systemctl start dirsrv-admin
-
