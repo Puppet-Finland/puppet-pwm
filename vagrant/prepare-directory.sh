@@ -2,18 +2,11 @@
 #
 # Prepare 389 Directory Server for use with Pwm
 #
-PATH=/bin:/sbin:/usr/bin:/usr/sbin
-INSTANCE="vagrant"
-SOURCE_DIR="/vagrant/vagrant"
-DBPATH="/etc/dirsrv/slapd-$INSTANCE"
-ADMIN_DBPATH="/etc/dirsrv/admin-serv"
-PINFILE="$DBPATH/pin.txt"
-ADMIN_PINFILE="$ADMIN_DBPATH/pin.txt"
-PASSFILE="/tmp/pass"
-PK12FILE="/tmp/keys.pk12"
-PASS="vagrant"
-NOISE="/tmp/noise"
-NSS_CONF="$ADMIN_DBPATH/nss.conf"
+
+SCRIPT=$(readlink -f "$0")
+SCRIPTPATH=$(dirname "$SCRIPT")
+
+. $SCRIPTPATH/vars
 
 # Do not pull the carpet from beneath 389ds
 systemctl stop dirsrv@$INSTANCE
