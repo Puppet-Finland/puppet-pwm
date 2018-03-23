@@ -3,7 +3,8 @@
 # Prepare 389 Directory Server for use with Pwm
 #
 PATH=/bin:/sbin:/usr/bin:/usr/sbin
-DBPATH="/etc/dirsrv/slapd-vagrant"
+INSTANCE="vagrant"
+DBPATH="/etc/dirsrv/slapd-$INSTANCE"
 ADMIN_DBPATH="/etc/dirsrv/admin-serv"
 PINFILE="$DBPATH/pin.txt"
 ADMIN_PINFILE="$ADMIN_DBPATH/pin.txt"
@@ -14,13 +15,13 @@ NOISE="/tmp/noise"
 NSS_CONF="$ADMIN_DBPATH/nss.conf"
 
 # Do not pull the carpet from beneath 389ds
-systemctl stop dirsrv@vagrant
+systemctl stop dirsrv@$INSTANCE
 
 # Cleanup to allow multiple consecutive runs
 rm -f $ADMIN_DBPATH/*.db $DBPATH/*.db $PINFILE $PASSFILE
 
 # Import a minimal database (dc=example,dc=org) modified to work with Pwm
-ldif2db -Z vagrant -s 'dc=example,dc=org' -i /vagrant/vagrant/example.org.ldif
+ldif2db -Z $INSTANCE -s 'dc=example,dc=org' -i /vagrant/vagrant/example.org.ldif
 
 # Enable TLS using a self-signed SSL certificate. Adapted from here:
 #
@@ -41,7 +42,7 @@ chown dirsrv:dirsrv $PINFILE
 chmod 400 $PINFILE
 
 # Start the directory server so that we can ldapmodify/add
-systemctl start dirsrv@vagrant
+systemctl start dirsrv@$INSTANCE
 
 # Enable memberOf plugin
 ldapmodify -D "cn=Directory Manager" -w $PASS -p 389 -h pwm-dirsrv.local -x -f /vagrant/vagrant/memberOf.ldif
@@ -56,7 +57,7 @@ ldapmodify -D "cn=Directory Manager" -w $PASS -p 389 -h pwm-dirsrv.local -x -f /
 ldapadd -D "cn=Directory Manager" -w $PASS -p 389 -h pwm-dirsrv.local -x -f /vagrant/vagrant/rsa.ldif
 
 # Restart to activate the memberOf plugin
-systemctl restart dirsrv@vagrant
+systemctl restart dirsrv@$INSTANCE
 
 ### Enable TLS for the admin server
 systemctl stop dirsrv-admin
