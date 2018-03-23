@@ -45,16 +45,16 @@ chmod 400 $PINFILE
 systemctl start dirsrv@$INSTANCE
 
 # Enable memberOf plugin
-ldapmodify -D "cn=Directory Manager" -w $PASS -p 389 -h pwm-dirsrv.local -x -f /vagrant/vagrant/memberOf.ldif
+ldapmodify -D "cn=Directory Manager" -w $PASS -x -f /vagrant/vagrant/memberOf.ldif
 
 # Enable TLS and set the LDAPS port for Directory Server
-ldapmodify -D "cn=Directory Manager" -w $PASS -p 389 -h pwm-dirsrv.local -x -f /vagrant/vagrant/ldap-tls.ldif
+ldapmodify -D "cn=Directory Manager" -w $PASS -x -f /vagrant/vagrant/ldap-tls.ldif
 
 # Enable TLS for Connections from the Console to Directory Server
-ldapmodify -D "cn=Directory Manager" -w $PASS -p 389 -h pwm-dirsrv.local -x -f /vagrant/vagrant/console-dirsrv.ldif
+ldapmodify -D "cn=Directory Manager" -w $PASS -x -f /vagrant/vagrant/console-dirsrv.ldif
 
 # Enable RSA
-ldapadd -D "cn=Directory Manager" -w $PASS -p 389 -h pwm-dirsrv.local -x -f /vagrant/vagrant/rsa.ldif
+ldapadd -D "cn=Directory Manager" -w $PASS -x -f /vagrant/vagrant/rsa.ldif
 
 # Restart to activate the memberOf plugin
 systemctl restart dirsrv@$INSTANCE
