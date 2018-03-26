@@ -38,7 +38,7 @@ class pwm::install
             command   => 'mvn package',
             cwd       => $source_dir,
             logoutput => true,
-            timeout   => '1800',
+            timeout   => '3600',
             user      => $build_user,
             path      => ['/bin','/usr/bin','/usr/local/bin'],
             creates   => $war_file,
