@@ -17,38 +17,13 @@ rm -f $ADMIN_DBPATH/*.db $DBPATH/*.db $PINFILE $PASSFILE
 # Import a minimal database (dc=example,dc=org) modified to work with Pwm
 ldif2db -Z $INSTANCE -s 'dc=example,dc=org' -i $SOURCE_DIR/example.org.ldif
 
-# Enable TLS using a self-signed SSL certificate. Adapted from here:
-#
-# https://access.redhat.com/documentation/en-us/red_hat_directory_server/10/html/administration_guide/enabling_tls
-#
-# Create a temporary password file
-echo "$PASS" > $PASSFILE
-openssl rand -out $NOISE 4096
-certutil -f $PASSFILE -d $DBPATH -N
-certutil -f $PASSFILE -S -x -d $DBPATH -z $NOISE -n "server-cert" -s "CN=$HOSTNAME" -t "CT,C,C" -m $RANDOM --keyUsage digitalSignature,nonRepudiation,keyEncipherment,dataEncipherment
-rm -f $NOISE
-chown dirsrv:dirsrv $DBPATH/*.db
-chmod 600 $DBPATH/*.db
-
-# Ensure that dirsrv does not prompt for password when it restarts
-echo "Internal (Software) Token:$PASS" > $PINFILE
-chown dirsrv:dirsrv $PINFILE
-chmod 400 $PINFILE
+$SCRIPTPATH/enable-tls-in-slapd.sh
 
 # Start the directory server so that we can ldapmodify/add
 systemctl start dirsrv@$INSTANCE
 
 # Enable memberOf plugin
 ldapmodify -D "cn=Directory Manager" -w $PASS -x -f $SOURCE_DIR/memberOf.ldif
-
-# Enable TLS and set the LDAPS port for Directory Server
-ldapmodify -D "cn=Directory Manager" -w $PASS -x -f $SOURCE_DIR/ldap-tls.ldif
-
-# Enable TLS for Connections from the Console to Directory Server
-ldapmodify -D "cn=Directory Manager" -w $PASS -x -f $SOURCE_DIR/console-dirsrv.ldif
-
-# Enable RSA
-ldapadd -D "cn=Directory Manager" -w $PASS -x -f $SOURCE_DIR/rsa.ldif
 
 # Restart to activate the memberOf plugin
 systemctl restart dirsrv@$INSTANCE
