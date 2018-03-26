@@ -8,6 +8,7 @@ host { 'pwm-dirsrv.local':
 include ::tomcat
 
 class { '::pwm':
-    build      => true,
-    build_user => 'ubuntu',
+    build         => true,
+    build_user    => 'ubuntu',
+    config_source => 'puppet:///modules/pwm/PwmConfiguration.xml',
 }

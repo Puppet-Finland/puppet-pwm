@@ -57,10 +57,10 @@ class pwm::config
 
     # Pwm webapp configuration
     file { 'pwm-PwmConfiguration.xml':
-        ensure  => present,
-        name    => "${::pwm::params::application_path}/PwmConfiguration.xml",
-        source  => $config_source,
-        mode    => '0644',
+        ensure => present,
+        name   => "${::pwm::params::application_path}/PwmConfiguration.xml",
+        source => $config_source,
+        mode   => '0644',
     }
 
     # Tomcat configuration

@@ -32,12 +32,16 @@ In particular 389-console depends on these being set - it is not easy to get it
 to play nicely with port forwards.
 
 Once these are in place you can access Pwm using a web browser at
-http://pwm.local:8080/pwm. The admin URL for 389 admin server is
-http://pwm-dirsrv.local:9830.
+http://pwm.local:8080/pwm.
+
+To login with 389-console use https://pwm-dirsrv.local:9830 as the URL. The 
+console should ask if you want to accept the admin server certificate. If you 
+say yes, you will be able to modify the directory.
 
 When *pwm-dirsrv* is provisioned several things happen:
 
 * The memberOf plugin is enabled and configured
+* TLS is enabled for the slapd instance and the admin server
 * A minimal sample directory tailored for Pwm is imported
 
 The Directory server instance is called "vagrant". You can manage it with
@@ -60,6 +64,9 @@ cn=Directory Administrator, is created automatically. This user is primarily
 useful for modifying directory configuration and for making test LDAP searches.
 The Directory Server can also be managed using 389-console. Login as "admin"
 with password "vagrant".
+
+The pwm instance should work out of the box as a simple PwmConfiguration.xml is 
+provided. Try logging in as "john.doe" with password "vagrant" to verify that.
 
 # Debugging tips for Directory Server
 
