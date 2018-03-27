@@ -9,7 +9,7 @@ SCRIPTPATH=$(dirname "$SCRIPT")
 
 . $SCRIPTPATH/vars
 
-echo "$PASS" > $PASSFILE
+echo "$PK12PASS" > $PASSFILE
 openssl rand -out $NOISE 4096
 certutil -f $PASSFILE -d $DBPATH -N
 certutil -f $PASSFILE -S -x -d $DBPATH -z $NOISE -n "server-cert" -s "CN=$HOSTNAME" -t "CT,C,C" -m $RANDOM --keyUsage digitalSignature,nonRepudiation,keyEncipherment,dataEncipherment
@@ -18,7 +18,7 @@ chown dirsrv:dirsrv $DBPATH/*.db
 chmod 600 $DBPATH/*.db
 
 # Ensure that dirsrv does not prompt for password when it restarts
-echo "Internal (Software) Token:$PASS" > $PINFILE
+echo "Internal (Software) Token:$PK12PASS" > $PINFILE
 chown dirsrv:dirsrv $PINFILE
 chmod 400 $PINFILE
 
@@ -26,10 +26,10 @@ chmod 400 $PINFILE
 systemctl start dirsrv@$INSTANCE
 
 # Enable TLS and set the LDAPS port for Directory Server
-ldapmodify -D "cn=Directory Manager" -w $PASS -x -f $SOURCE_DIR/ldap-tls.ldif
+ldapmodify $CONNECTION_PARAMS -D "$ROOTDN" -w $ROOTDN_PASS -x -f $SOURCE_DIR/ldap-tls.ldif
 
 # Enable TLS for Connections from the Console to Directory Server
-ldapmodify -D "cn=Directory Manager" -w $PASS -x -f $SOURCE_DIR/console-dirsrv.ldif
+ldapmodify $CONNECTION_PARAMS -D "$ROOTDN" -w $ROOTDN_PASS -x -f $SOURCE_DIR/console-dirsrv.ldif
 
 # Enable RSA
-ldapadd -D "cn=Directory Manager" -w $PASS -x -f $SOURCE_DIR/rsa.ldif
+ldapadd $CONNECTION_PARAMS -D "$ROOTDN" -w $ROOTDN_PASS -x -f $SOURCE_DIR/rsa.ldif

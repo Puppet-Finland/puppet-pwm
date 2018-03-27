@@ -9,9 +9,16 @@ INSTANCE="vagrant"
 SOURCE_DIR="/vagrant/vagrant"
 PASSFILE="/tmp/pass"
 PK12FILE="/tmp/keys.pk12"
-PASS="vagrant"
+PK12PASS="vagrant"
+ROOTDN="cn=Directory Manager"
+ROOTDN_PASS="vagrant"
 NOISE="/tmp/noise"
 ADMIN_DBPATH="/etc/dirsrv/admin-serv"
+CONNECTION_PARAMS=""
+
+# Sometimes not defining host and port may give misleading warnings (e.g. 
+# "Invalid credentials"
+CONNECTION_PARAMS="-h localhost -p 389"
 
 # Derived variables
 DBPATH="/etc/dirsrv/slapd-$INSTANCE"

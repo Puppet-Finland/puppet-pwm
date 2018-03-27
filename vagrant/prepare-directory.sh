@@ -23,7 +23,7 @@ $SCRIPTPATH/enable-tls-in-slapd.sh
 systemctl start dirsrv@$INSTANCE
 
 # Enable memberOf plugin
-ldapmodify -D "cn=Directory Manager" -w $PASS -x -f $SOURCE_DIR/memberOf.ldif
+ldapmodify $CONNECTION_PARAMS -D "$ROOTDN" -w $ROOTDN_PASS -x -f $SOURCE_DIR/memberOf.ldif
 
 # Restart to activate the memberOf plugin
 systemctl restart dirsrv@$INSTANCE

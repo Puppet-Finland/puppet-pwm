@@ -88,6 +88,14 @@ For further samples check [vagrant/prepare-directory.sh](vagrant/prepare-directo
 Note that if your production LDAP directory contains a large number of user objects
 you may need to set nsslapd-lookthroughlimit to -1 for the Pwm proxy user.
 
+# Using Vagrant scripts to enable TLS on production servers
+
+The [vagrant](vagrant) subdirectory contains several scripts for automatically 
+enabling TLS and memberOf plugin in Directory Server and Admin Server. These can 
+also be used on a production server by modifying [vagrant/vars](vagrant/vars) 
+and [vagrant/console-dirsrv.ldif](vagrant/console-dirsrv.ldif) to match the 
+production setup.
+
 # Dependencies
 
 See [metadata.json](metadata.json).
