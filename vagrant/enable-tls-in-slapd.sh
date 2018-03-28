@@ -12,7 +12,7 @@ SCRIPTPATH=$(dirname "$SCRIPT")
 echo "$PK12PASS" > $PASSFILE
 openssl rand -out $NOISE 4096
 certutil -f $PASSFILE -d $DBPATH -N
-certutil -f $PASSFILE -S -x -d $DBPATH -z $NOISE -n "server-cert" -s "CN=$HOSTNAME" -t "CT,C,C" -m $RANDOM --keyUsage digitalSignature,nonRepudiation,keyEncipherment,dataEncipherment
+certutil -f $PASSFILE -S -x -d $DBPATH -v $VALID_MONTHS -z $NOISE -n "server-cert" -s "CN=$HOSTNAME" -t "CT,C,C" -m $RANDOM --keyUsage digitalSignature,nonRepudiation,keyEncipherment,dataEncipherment
 rm -f $NOISE
 chown dirsrv:dirsrv $DBPATH/*.db
 chmod 600 $DBPATH/*.db
