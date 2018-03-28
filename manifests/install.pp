@@ -53,6 +53,7 @@ class pwm::install
 
     # Use the Tomcat module to install pwm.war
     tomcat::war { 'pwm':
-        source => $war_file,
+        source  => $war_file,
+        require => Class['::tomcat'], 
     }
 }
