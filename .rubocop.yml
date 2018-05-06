@@ -13,6 +13,8 @@ AllCops:
   - pkg/**/*
   - spec/fixtures/**/*
   - vendor/**/*
+  - vagrant/Puppetfile
+  - Vagrantfile
 Metrics/LineLength:
   Description: People have wide screens, use them.
   Max: 200
