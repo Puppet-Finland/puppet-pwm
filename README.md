@@ -95,19 +95,3 @@ enabling TLS and memberOf plugin in Directory Server and Admin Server. These can
 also be used on a production server by modifying [vagrant/vars](vagrant/vars) 
 and [vagrant/console-dirsrv.ldif](vagrant/console-dirsrv.ldif) to match the 
 production setup.
-
-# Dependencies
-
-See [metadata.json](metadata.json).
-
-# Operating system support
-
-This module has been tested on
-
-* Ubuntu 16.04
-
-It should work out of the box or with minor modifications on other Debian/Ubuntu 
-derivatives. And earlier version of this module worked on Ubuntu 14.04 but this 
-may or may not be the case anymore.
-
-For details see [params.pp](manifests/params.pp).
