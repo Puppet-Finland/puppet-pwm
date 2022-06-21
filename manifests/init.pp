@@ -44,19 +44,32 @@
 #
 class pwm
 (
-    Boolean $manage = true,
-    Boolean $manage_config = true,
-    #            $build = false,
-    #            $build_user = undef,
-    #            $war_source = 'puppet:///files/pwm.war',
-    #            $config_source = "puppet:///files/pwm-PwmConfiguration-${::fqdn}.xml"
-
-
+  Boolean $manage = true,
+  Boolean $manage_config = true,
+  Boolean $manage_apache = true,
+  Boolean $manage_tomcat = true,
+  Optional[String] $tomcat_admin_user = undef,
+  Optional[String] $tomcat_admin_user_password = undef,
+  #            $build = false,
+  #            $build_user = undef,
+  #            $war_source = 'puppet:///files/pwm.war',
+  #            $config_source = "puppet:///files/pwm-PwmConfiguration-${::fqdn}.xml"
 ) inherits pwm::params
 {
 
   if $manage {
-  
+
+    if $manage_apache {
+      class { 'pwm::apache': }
+    }
+
+    if $manage_tomcat {
+      class { 'pwm::tomcat':
+        admin_user          => $tomcat_admin_user,
+        admin_user_password => $tomcat_admin_user_password,
+      }
+    }
+    
     #class { '::pwm::install':
     #  build      => $build,
     #  build_user => $build_user,

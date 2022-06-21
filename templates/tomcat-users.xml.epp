@@ -1,0 +1,4 @@
+<role rolename="manager-gui"/>
+<role rolename="admin-gui"/>
+<role rolename="manager-script"/>
+<user username="<%= $admin_user %>" password="<%= $admin_user_password %>" roles="manager-gui,admin-gui,manager-script"/>
