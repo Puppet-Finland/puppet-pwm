@@ -46,27 +46,27 @@ class pwm
 (
     Boolean $manage = true,
     Boolean $manage_config = true,
-            $build = false,
-            $build_user = undef,
-            $war_source = 'puppet:///files/pwm.war',
-            $config_source = "puppet:///files/pwm-PwmConfiguration-${::fqdn}.xml"
+    #            $build = false,
+    #            $build_user = undef,
+    #            $war_source = 'puppet:///files/pwm.war',
+    #            $config_source = "puppet:///files/pwm-PwmConfiguration-${::fqdn}.xml"
 
 
 ) inherits pwm::params
 {
 
-if $manage {
-
-    class { '::pwm::install':
-        build      => $build,
-        build_user => $build_user,
-        war_source => $war_source,
-    }
-
-    if $manage_config {
-        class { '::pwm::config':
-            config_source => $config_source,
-        }
-    }
-}
+  if $manage {
+  
+    #class { '::pwm::install':
+    #  build      => $build,
+    #  build_user => $build_user,
+    #  war_source => $war_source,
+    #}
+   
+    #if $manage_config {
+    #  class { '::pwm::config':
+    #      config_source => $config_source,
+    #  }
+    #}
+  }
 }
