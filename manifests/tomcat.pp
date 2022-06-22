@@ -22,8 +22,8 @@ class pwm::tomcat
   file { '/etc/tomcat9/tomcat-users.xml':
     ensure  => 'present',
     owner   => 'root',
-    group   => 'root',
-    mode    => '0700',
+    group   => 'tomcat',
+    mode    => '0750',
     content => epp('pwm/tomcat-users.xml.epp', $tomcat_users_xml_params),
     notify  => Service['tomcat9'],
   }
