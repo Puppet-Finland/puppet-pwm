@@ -47,6 +47,7 @@ class pwm
   Boolean $manage = true,
   Boolean $manage_config = true,
   Boolean $manage_apache = true,
+  Boolean $manage_openjdk = true,
   Boolean $manage_tomcat = true,
   Optional[String] $tomcat_admin_user = undef,
   Optional[String] $tomcat_admin_user_password = undef,
@@ -61,6 +62,10 @@ class pwm
 
     if $manage_apache {
       class { 'pwm::apache': }
+    }
+
+    if $manage_openjdk {
+      class { 'pwm::openjdk': }
     }
 
     if $manage_tomcat {
