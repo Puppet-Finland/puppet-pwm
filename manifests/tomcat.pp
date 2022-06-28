@@ -40,4 +40,24 @@ class pwm::tomcat
     content => epp('pwm/manager.xml.epp', $manager_xml_params),
     notify  => Service['tomcat9'],
   }
+
+  file { '/etc/pwm':
+    ensure => 'directory',
+    owner  => 'tomcat',
+    group  => 'tomcat',
+    mode   => '0770',
+  }
+
+  # Set up PWM's ApplicationPath directory which has Pwm configuration and
+  # other files. This is not set by default, which means that Pwm webapp
+  # will refuse to launch without this. Also, the systemd unit file bundled
+  # with Ubuntu 20.04 sandboxes Tomcat, preventing it from writing to
+  # undefined directories even if file system permissions would allow it.
+  # Therefore allow tomcat to write to Pwm's ApplicationPath as well.
+  systemd::dropin_file { 'pwm.conf':
+    unit    => 'tomcat9.service',
+    content => epp('pwm/systemd-override-pwm.conf.epp'),
+    require => File['/etc/pwm'],
+    notify  => Service['tomcat9'],
+  }
 }

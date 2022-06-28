@@ -1,5 +1,5 @@
 #
-# == Class: pwm::config
+# @summary configure Pwm
 #
 # Configure pwm
 #
