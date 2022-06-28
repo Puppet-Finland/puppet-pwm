@@ -44,13 +44,16 @@
 #
 class pwm
 (
-  Boolean $manage = true,
-  Boolean $manage_config = true,
-  Boolean $manage_apache = true,
-  Boolean $manage_openjdk = true,
-  Boolean $manage_tomcat = true,
-  Optional[String] $tomcat_admin_user = undef,
-  Optional[String] $tomcat_admin_user_password = undef,
+  Boolean          $manage = true,
+  Boolean          $manage_config = true,
+  Boolean          $manage_apache = true,
+  Boolean          $manage_tomcat = true,
+  String           $tomcat_catalina_host = 'localhost',
+  String           $tomcat_manager_allow_cidr = '127.0.0.1',
+  Optional[String] $tomcat_manager_user = undef,
+  Optional[String] $tomcat_manager_user_password = undef,
+
+  #
   #            $build = false,
   #            $build_user = undef,
   #            $war_source = 'puppet:///files/pwm.war',
@@ -64,23 +67,21 @@ class pwm
       class { 'pwm::apache': }
     }
 
-    if $manage_openjdk {
-      class { 'pwm::openjdk': }
-    }
-
     if $manage_tomcat {
       class { 'pwm::tomcat':
-        admin_user          => $tomcat_admin_user,
-        admin_user_password => $tomcat_admin_user_password,
+        catalina_host         => $tomcat_catalina_host,
+        manager_user          => $tomcat_manager_user,
+        manager_user_password => $tomcat_manager_user_password,
+        manager_allow_cidr    => $tomcat_manager_allow_cidr,
       }
     }
-    
+
     #class { '::pwm::install':
     #  build      => $build,
     #  build_user => $build_user,
     #  war_source => $war_source,
     #}
-   
+
     #if $manage_config {
     #  class { '::pwm::config':
     #      config_source => $config_source,
