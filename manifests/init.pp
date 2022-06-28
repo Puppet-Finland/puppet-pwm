@@ -44,14 +44,17 @@
 #
 class pwm
 (
-  Boolean          $manage = true,
-  Boolean          $manage_config = true,
-  Boolean          $manage_apache = true,
-  Boolean          $manage_tomcat = true,
-  String           $tomcat_catalina_host = 'localhost',
-  String           $tomcat_manager_allow_cidr = '127.0.0.1',
-  Optional[String] $tomcat_manager_user = undef,
-  Optional[String] $tomcat_manager_user_password = undef,
+  Stdlib::HttpsUrl     $pwm_download_url,
+  String               $pwm_context = 'pwm',
+  Boolean              $manage = true,
+  Boolean              $manage_config = true,
+  Boolean              $manage_apache = true,
+  Boolean              $manage_tomcat = true,
+  Stdlib::Absolutepath $tomcat_webapps_path = '/var/lib/tomcat9/webapps',
+  String               $tomcat_catalina_host = 'localhost',
+  String               $tomcat_manager_allow_cidr = '127.0.0.1',
+  Optional[String]     $tomcat_manager_user = undef,
+  Optional[String]     $tomcat_manager_user_password = undef,
 
   #
   #            $build = false,
@@ -76,11 +79,11 @@ class pwm
       }
     }
 
-    #class { '::pwm::install':
-    #  build      => $build,
-    #  build_user => $build_user,
-    #  war_source => $war_source,
-    #}
+    class { 'pwm::install':
+      context      => $pwm_context,
+      download_url => $pwm_download_url,
+      webapps_path => $tomcat_webapps_path, 
+    }
 
     #if $manage_config {
     #  class { '::pwm::config':

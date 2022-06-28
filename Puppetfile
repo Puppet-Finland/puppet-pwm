@@ -5,6 +5,7 @@ forge "https://forgeapi.puppetlabs.com"
 
 mod 'puppetlabs-apache', '7.0.0'
 mod 'puppetlabs-apt', '8.3.0'
+mod 'puppet-archive', '6.0.2'
 mod 'puppetlabs-concat', '7.1.1'
 mod 'puppet-nginx', '3.3.0'
 mod 'puppetlabs-postgresql', '8.0.0'
