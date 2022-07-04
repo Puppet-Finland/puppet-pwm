@@ -5,8 +5,6 @@
 #
 class pwm::params {
 
-    include ::os::params
-
     case $::osfamily {
         'Debian': {
             $build_deps = ['maven']

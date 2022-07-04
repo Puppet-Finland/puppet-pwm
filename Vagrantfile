@@ -1,40 +1,25 @@
 # -*- mode: ruby -*-
-# vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
 
   config.vm.define "pwm" do |box|
-    box.vm.box = "ubuntu/xenial64"
-    box.vm.box_version = "20171118.0.0"
-    box.vm.hostname = "pwm.local"
-    box.vm.network "private_network", ip: "192.168.103.100"
-    box.vm.synced_folder ".", "/vagrant", type: "virtualbox"
-    box.vm.provision "shell" do |s|
-      s.path = "vagrant/prepare.sh"
-      s.args = ["-n", "pwm", "-f", "debian", "-o", "xenial", "-b", "/home/ubuntu"]
-    end
-    box.vm.provision "shell", inline: "puppet apply --modulepath /home/ubuntu/modules /vagrant/vagrant/pwm.pp"
-    box.vm.provider "virtualbox" do |vb|
+    box.vm.box = "ubuntu/focal64"
+    box.vm.box_version = "20220511.0.0"
+    box.vm.hostname = 'pwm.vagrant.example.lan'
+    box.vm.provider 'virtualbox' do |vb|
       vb.gui = false
-      vb.memory = 1534
+      vb.memory = 1280
+      vb.customize ["modifyvm", :id, "--ioapic", "on"]
+      vb.customize ["modifyvm", :id, "--hpet", "on"]
     end
-  end
-
-  config.vm.define "pwm-dirsrv" do |box|
-    box.vm.box = "centos/7"
-    box.vm.box_version = "1710.01"
-    box.vm.hostname = "pwm-dirsrv.local"
-    box.vm.network "private_network", ip: "192.168.103.101"
-    box.vm.synced_folder ".", "/vagrant", type: "virtualbox"
-    box.vm.provision "shell" do |s|
-      s.path = "vagrant/prepare.sh"
-      s.args = ["-n", "pwm", "-f", "redhat", "-o", "el-7", "-b", "/home/vagrant"]
-    end
-    box.vm.provision "shell", inline: "puppet apply --modulepath /home/vagrant/modules /vagrant/vagrant/dirsrv.pp"
-    box.vm.provision "shell", inline: "/vagrant/vagrant/prepare-directory.sh"
-    box.vm.provider "virtualbox" do |vb|
-      vb.gui = false
-      vb.memory = 1024
-    end
+    box.vm.network "private_network", ip: "192.168.59.80"
+    box.vm.provision "shell", path: "vagrant/common.sh"
+    box.vm.provision "shell", inline: "/usr/bin/apt-get update"
+    box.vm.provision "shell",
+      inline: "/opt/puppetlabs/bin/puppet apply /vagrant/vagrant/hosts.pp --modulepath=/vagrant/modules",
+      env: {  'FACTER_my_host': 'pwm.vagrant.example.lan',
+              'FACTER_my_ip': '192.168.59.112' }
+    box.vm.provision "shell",
+      inline: "/opt/puppetlabs/bin/puppet apply /vagrant/vagrant/pwm.pp --modulepath=/vagrant/modules"
   end
 end

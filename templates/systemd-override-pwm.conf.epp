@@ -1,0 +1,3 @@
+[Service]
+ReadWritePaths=/etc/pwm
+Environment="PWM_APPLICATIONPATH=/etc/pwm"
