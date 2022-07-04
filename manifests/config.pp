@@ -62,7 +62,4 @@ class pwm::config
         source => $config_source,
         mode   => '0644',
     }
-
-    # Tomcat configuration
-    include ::pwm::config::tomcat
 }
