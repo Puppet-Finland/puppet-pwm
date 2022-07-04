@@ -15,8 +15,6 @@
 #   Whether to manage Pwm or not
 # @param manage_config
 #   Whether to manage Pwm configuration or not
-# @param manage_apache
-#   Whether to manage Apache configuration or not
 # @param manage_tomcat
 #   Whether to manage Tomcat or not
 # @param tomcat_webapps_path
@@ -35,7 +33,6 @@ class pwm (
   String               $pwm_context = 'pwm',
   Boolean              $manage = true,
   Boolean              $manage_config = true,
-  Boolean              $manage_apache = true,
   Boolean              $manage_tomcat = true,
   Stdlib::Absolutepath $tomcat_webapps_path = '/var/lib/tomcat9/webapps',
   String               $tomcat_catalina_host = 'localhost',
@@ -44,10 +41,6 @@ class pwm (
   Optional[String]     $tomcat_manager_user_password = undef,
 ) {
   if $manage {
-    if $manage_apache {
-      class { 'pwm::apache': }
-    }
-
     if $manage_tomcat {
       class { 'pwm::tomcat':
         catalina_host         => $tomcat_catalina_host,
