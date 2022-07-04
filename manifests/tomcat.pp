@@ -2,13 +2,17 @@
 # @summary
 #   Set up Tomcat for Pwm
 #
-class pwm::tomcat
-(
+# @param catalina_host
+# @param manager_allow_cidr
+# @param manager_user
+# @param manager_user_password
+#
+class pwm::tomcat (
   Stdlib::Fqdn $catalina_host,
   String       $manager_allow_cidr,
   String       $manager_user,
   String       $manager_user_password,
-){
+) {
   package { ['tomcat9', 'tomcat9-admin']:
     ensure => 'present',
   }
@@ -18,11 +22,13 @@ class pwm::tomcat
     enable => true,
   }
 
-  $tomcat_users_xml_params = {'manager_user'          => $manager_user,
-                              'manager_user_password' => $manager_user_password, }
+  $tomcat_users_xml_params = {
+    'manager_user'          => $manager_user,
+    'manager_user_password' => $manager_user_password,
+  }
 
   file { '/etc/tomcat9/tomcat-users.xml':
-    ensure  => 'present',
+    ensure  => 'file',
     owner   => 'root',
     group   => 'tomcat',
     mode    => '0644',
@@ -30,10 +36,10 @@ class pwm::tomcat
     notify  => Service['tomcat9'],
   }
 
-  $manager_xml_params = {'allow_cidr' => $manager_allow_cidr, }
+  $manager_xml_params = { 'allow_cidr' => $manager_allow_cidr, }
 
   file { "/etc/tomcat9/Catalina/${catalina_host}/manager.xml":
-    ensure  => 'present',
+    ensure  => 'file',
     owner   => 'root',
     group   => 'tomcat',
     mode    => '0644',

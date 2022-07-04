@@ -1,49 +1,36 @@
 #
-# == Class: pwm
+# @summary
+#   A Puppet module for managing Pwm:
 #
-# A Puppet module for managing Pwm:
+#   https://github.com/pwm-project/pwm
 #
-# https://github.com/pwm-project/pwm
+#   Note that the module expects to find pwm.war at the root of the Puppet 
+#   fileserver. This could be avoided if Pwm was packaged for Debian.
 #
-# Note that the module expects to find pwm.war at the root of the Puppet 
-# fileserver. This could be avoided if Pwm was packaged for Debian.
+# @param pwm_download_url
+#   The URL from which to download the PWM WAR file
+# @param pwm_context
+#   Context (path) of Pwm on the Tomcat installation
+# @param manage
+#   Whether to manage Pwm or not
+# @param manage_config
+#   Whether to manage Pwm configuration or not
+# @param manage_apache
+#   Whether to manage Apache configuration or not
+# @param manage_tomcat
+#   Whether to manage Tomcat or not
+# @param tomcat_webapps_path
+#   Webapps directory for Tomcat
+# @param tomcat_catalina_host
+#   Name of the Pwm host for Tomcat  
+# @param tomcat_manager_allow_cidr
+#   CIDR blocks to allow traffic from to Tomcat Manager webapp
+# @param tomcat_manager_user
+#   Username for accessing Tomcat Manager
+# @param tomcat_manager_user_password
+#   Password for Tomcat Manager user
 #
-# == Parameters
-#
-# [*manage*]
-#   Manage Pwm with Puppet. Valid values are true (default) and false.
-# [*manage_config*]
-#   Manage Pwm configuration with Puppet. Valid values are true (default) and 
-#   false.
-# [*build*]
-#   Build Pwm from sources. Primarily intended for use with Vagrant. Valid 
-#   values are true and false (default).
-# [*build_user*]
-#   User to build Pwm as. Primarily intended for use with Vagrant. No default 
-#   value. Note that building as 'root' does not seem to work and is hence
-#   prevented.
-# [*war_source*]
-#   Location of the pwm war file. Passed on to the ::tomcat::war resource when 
-#   $build is false. Defaults to 'puppet:///files/pwm.war' under the assumption 
-#   that in production enviroments a customized pwm.war is built outside of this 
-#   module and distributed via the Puppet fileserver. This parameter has no 
-#   effect if $build is true.
-# [*config_source*]
-#   Location of a customized PwmConfiguration.xml file. Passed on to the Puppet 
-#   File resource "source" parameter. Defaults to 
-#   "puppet:///files/pwm-PwmConfiguration-${::fqdn}.xml" under the assumption 
-#   that a customized configuration file is distributed via Puppet fileserver.
-#
-# == Authors
-#   
-# Samuli Seppänen <samuli@openvpn.net>
-#   
-# == License
-# 
-# BSD-license. See file LICENSE for details.
-#
-class pwm
-(
+class pwm (
   Stdlib::HttpsUrl     $pwm_download_url,
   String               $pwm_context = 'pwm',
   Boolean              $manage = true,
@@ -55,17 +42,8 @@ class pwm
   String               $tomcat_manager_allow_cidr = '127.0.0.1',
   Optional[String]     $tomcat_manager_user = undef,
   Optional[String]     $tomcat_manager_user_password = undef,
-
-  #
-  #            $build = false,
-  #            $build_user = undef,
-  #            $war_source = 'puppet:///files/pwm.war',
-  #            $config_source = "puppet:///files/pwm-PwmConfiguration-${::fqdn}.xml"
-) inherits pwm::params
-{
-
+) {
   if $manage {
-
     if $manage_apache {
       class { 'pwm::apache': }
     }
@@ -82,13 +60,7 @@ class pwm
     class { 'pwm::install':
       context      => $pwm_context,
       download_url => $pwm_download_url,
-      webapps_path => $tomcat_webapps_path, 
+      webapps_path => $tomcat_webapps_path,
     }
-
-    #if $manage_config {
-    #  class { '::pwm::config':
-    #      config_source => $config_source,
-    #  }
-    #}
   }
 }

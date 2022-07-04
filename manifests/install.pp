@@ -1,8 +1,11 @@
 #
 # @summary install pwm
 #
-class pwm::install
-(
+# @param download_url
+# @param context
+# @param webapps_path
+#
+class pwm::install (
   Stdlib::HTTPSUrl     $download_url,
   String               $context,
   Stdlib::AbsolutePath $webapps_path,
