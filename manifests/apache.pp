@@ -4,7 +4,7 @@
 #
 class pwm::apache {
   class { 'apache':
-    mpm_module => 'prefork'
+    mpm_module => 'prefork',
   }
   include apache::mod::php
   include apache::mod::prefork

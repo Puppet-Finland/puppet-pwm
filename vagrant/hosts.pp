@@ -1,5 +1,5 @@
-host { $::my_host:
+host { $facts['my_host']:
   ensure => 'present',
-  ip     => $::my_ip,
+  ip     => $facts['my_ip'],
   target => '/etc/hosts',
 }
