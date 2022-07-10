@@ -1,6 +1,6 @@
 {
   "name": "puppetfinland-pwm",
-  "version": "0.1.3",
+  "version": "1.0.0",
   "author": "Puppet-Finland team",
   "summary": "Setup Pwm, Open Source Password Self Service for LDAP directories",
   "license": "BSD-2-Clause",
