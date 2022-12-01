@@ -27,6 +27,8 @@
 #   Username for accessing Tomcat Manager
 # @param tomcat_manager_user_password
 #   Password for Tomcat Manager user
+# @param tomcat_java_opts
+#   Tomcat's JAVA_OPTS setting
 #
 class pwm (
   Stdlib::HttpsUrl     $pwm_download_url,
@@ -39,6 +41,7 @@ class pwm (
   String               $tomcat_manager_allow_cidr = '127.0.0.1',
   Optional[String]     $tomcat_manager_user = undef,
   Optional[String]     $tomcat_manager_user_password = undef,
+  Array[String]        $tomcat_java_opts = ['-Djava.awt.headless=true'],
 ) {
   if $manage {
     if $manage_tomcat {
@@ -47,6 +50,7 @@ class pwm (
         manager_user          => $tomcat_manager_user,
         manager_user_password => $tomcat_manager_user_password,
         manager_allow_cidr    => $tomcat_manager_allow_cidr,
+        java_opts             => $tomcat_java_opts,
       }
     }
 

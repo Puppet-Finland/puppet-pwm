@@ -6,15 +6,25 @@
 # @param manager_allow_cidr
 # @param manager_user
 # @param manager_user_password
+# @param java_opts
 #
 class pwm::tomcat (
-  Stdlib::Fqdn $catalina_host,
-  String       $manager_allow_cidr,
-  String       $manager_user,
-  String       $manager_user_password,
+  Stdlib::Fqdn  $catalina_host,
+  String        $manager_allow_cidr,
+  String        $manager_user,
+  String        $manager_user_password,
+  Array[String] $java_opts,
 ) {
   package { ['tomcat9', 'tomcat9-admin']:
     ensure => 'present',
+  }
+
+  $java_opts_str = join($java_opts, ' ')
+
+  file_line { 'tomcat9-JAVA_OPTS':
+    path  => '/etc/default/tomcat9',
+    line  => "JAVA_OPTS=\"${java_opts_str}\"",
+    match => '^JAVA_OPTS=',
   }
 
   service { 'tomcat9':
